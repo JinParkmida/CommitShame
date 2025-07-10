@@ -237,7 +237,7 @@ public_shame() {
     author=$(get_author_name)
     message="$1"
     reason="$2"
-    curl -s -X POST -H "Content-Type: application/json" -d '{"author":"'$author'","insult":"'$message'","reason":"'$reason'"}' "$WEBHOOK_URL" >/dev/null || true
+    curl -s -X POST -H "Content-Type: application/json" -d "{\"author\":\"$author\",\"insult\":\"$message\",\"reason\":\"$reason\"}" "$WEBHOOK_URL" >/dev/null || true
   fi
 }
 
