@@ -1,0 +1,44 @@
+name: Commit-Shame CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Make installer executable
+        run: chmod +x install-commit-shame.sh
+
+      - name: Test installer syntax
+        run: bash -n install-commit-shame.sh
+
+      - name: Test pre-commit.sh syntax
+        run: bash -n pre-commit.sh
+
+      - name: Test commit-msg.sh syntax
+        run: bash -n commit-msg.sh
+
+      - name: Test pre-push.sh syntax
+        run: bash -n pre-push.sh
+
+      - name: Run installer
+        run: ./install-commit-shame.sh
+
+      - name: Verify hooks are executable
+        run: |
+          test -x .git/hooks/pre-commit
+          test -x .git/hooks/commit-msg
+          test -x .git/hooks/pre-push
+
+      - name: Test installed hook syntax
+        run: |
+          bash -n .git/hooks/pre-commit
+          bash -n .git/hooks/commit-msg
+          bash -n .git/hooks/pre-push 
