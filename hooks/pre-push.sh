@@ -183,7 +183,7 @@ print_random_tip() {
 }
 
 EASTER_EGGS=(
-  "  _____ _                 _     _                 _ \n / ____| |               | |   | |               | |\n| |    | | ___  _   _  __| | __| | ___  _ __ ___ | |\n| |    | |/ _ \| | | |/ _` |/ _` |/ _ \| '_ ` _ \| |\n| |____| | (_) | |_| | (_| | (_| | (_) | | | | | | |\n \_____|_|\___/ \__,_|\__,_|\__,_|\___/|_| |_| |_|_|\nCommit-Shame Bot: You found the secret! Now go push safely."
+  "  _____ _                 _     _                 _ \n / ____| |               | |   | |               | |\n| |    | | ___  _   _  __| | __| | ___  _ __ ___ | |\n| |    | |/ _ \\| | | |/ _' |/ _' |/ _ \\| '_ ' _ \\| |\n| |____| | (_) | |_| | (_| | (_| | (_) | | | | | | |\n \\_____|_|\\___/ \\__,_|\\__,_|\\__,_|\\___/|_| |_| |_|_|\nCommit-Shame Bot: You found the secret! Now go push safely."
   "Commit-Shame Bot: This is the rarest roast. You win... nothing!"
   "Commit-Shame Bot: If you see this, buy a lottery ticket."
 )
