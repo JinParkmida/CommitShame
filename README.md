@@ -1,3 +1,5 @@
+[☕ Buy me a coffee!](https://buymeacoffee.com/jinparkmida) — Totally optional, this project is free, but if you want to fuel more shaming bots, you know what to do!
+
 # Commit-Shame Bot™️
 
 > _"Finally, a bot that tells me what my coworkers are too polite to say."_
