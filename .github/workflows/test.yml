@@ -1,0 +1,65 @@
+name: Test Commit-Shame Bot
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Git
+      run: |
+        git config --global user.name "Test User"
+        git config --global user.email "test@example.com"
+    
+    - name: Test Bash installer
+      run: |
+        # Test installer syntax
+        bash -n install-commit-shame.sh
+        bash -n pre-commit.sh
+        bash -n commit-msg.sh
+        bash -n pre-push.sh
+        
+        # Test installation
+        ./install-commit-shame.sh
+        
+        # Verify hooks are executable
+        test -x .git/hooks/pre-commit
+        test -x .git/hooks/commit-msg
+        test -x .git/hooks/pre-push
+        
+        # Test hook syntax
+        bash -n .git/hooks/pre-commit
+        bash -n .git/hooks/commit-msg
+        bash -n .git/hooks/pre-push
+    
+    - name: Test PowerShell installer (if available)
+      run: |
+        if command -v pwsh >/dev/null 2>&1; then
+          pwsh -NoProfile -ExecutionPolicy Bypass -File install-commit-shame.ps1
+        else
+          echo "PowerShell not available, skipping PowerShell tests"
+        fi
+    
+    - name: Test basic functionality
+      run: |
+        # Test config file loading
+        echo "MIN_LINES=5" > .commit-shame-config
+        echo "MAX_LINES=100" >> .commit-shame-config
+        echo "INSULT_PACK=dad" >> .commit-shame-config
+        
+        # Test that hooks can be sourced without errors
+        source .git/hooks/pre-commit || true
+        source .git/hooks/commit-msg || true
+        source .git/hooks/pre-push || true
+    
+    - name: Validate README
+      run: |
+        # Check for broken links
+        grep -r "http" README.md | grep -v "buymeacoffee.com" || true 

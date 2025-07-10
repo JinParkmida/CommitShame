@@ -1,12 +1,53 @@
 #!/usr/bin/env bash
 set -e
 
-# Load config if present
-CONFIG_FILE=".commit-shame-config"
-if [ -f "$CONFIG_FILE" ]; then
+# YAML config auto-detection/merging
+parse_yaml() {
+  # Only supports simple key: value pairs (no nesting)
+  local yaml_file="$1"
+  while IFS= read -r line; do
+    if [[ $line =~ ^([a-zA-Z0-9_]+):[[:space:]]*(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      value="${BASH_REMATCH[2]}"
+      # Remove quotes
+      value="${value%\"}"
+      value="${value#\"}"
+      export "${key^^}=$value"
+    fi
+  done < "$yaml_file"
+}
+
+if [ -f .shamerc ]; then
+  if command -v yq >/dev/null 2>&1; then
+    # Use yq for full YAML parsing
+    eval "$(yq eval '. as $cfg ireduce ({}; . *+ $cfg) | to_entries | .[] | "export \(.key | ascii_upcase)=\(.value)"' .shamerc)"
+  else
+    # Fallback to minimal Bash parser
+    parse_yaml .shamerc
+  fi
+elif [ -f .commit-shame-config ]; then
   # shellcheck disable=SC1090
-  source "$CONFIG_FILE"
+  source .commit-shame-config
 fi
+
+# Plugin auto-discovery/loader
+run_plugins() {
+  if [ -d hooks.d ]; then
+    for plugin in hooks.d/*.sh; do
+      [ -x "$plugin" ] || continue
+      plugin_name=$(basename "$plugin" .sh)
+      # Check if plugin is enabled via ENABLE_<PLUGIN>=true or plugins: in config
+      enabled_var="ENABLE_${plugin_name^^}"
+      if [ "${!enabled_var}" = "true" ]; then
+        "$plugin" || exit 1
+      fi
+      # Also check for YAML plugins: list (PLUGIN_ENABLED)
+      if [ "$(eval echo \${plugin_name}_ENABLED)" = "true" ]; then
+        "$plugin" || exit 1
+      fi
+    done
+  fi
+}
 
 # Allow config to override MIN_LINES, MAX_LINES, INSULTS, etc.
 MIN_LINES=${MIN_LINES:-3}

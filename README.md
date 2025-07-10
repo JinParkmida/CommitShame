@@ -1,6 +1,8 @@
-[☕ Buy me a coffee!](https://ko-fi.com/nordicseoul) — Totally optional, this project is free, but if you want to fuel more shaming bots, you know what to do!
+[☕ Buy me a coffee!](https://buymeacoffee.com/jinparkmida) — Totally optional, this project is free, but if you want to fuel more shaming bots, you know what to do!
 
 ![Commit-Shame Bot Logo](logo.png)
+
+[![Tests](https://github.com/yourusername/CommitShame/actions/workflows/test.yml/badge.svg)](https://github.com/yourusername/CommitShame/actions/workflows/test.yml)
 
 # Commit-Shame Bot™️
 
@@ -68,6 +70,22 @@ WEBHOOK_URL="https://hooks.slack.com/services/your/webhook/url"
 CUSTOM_INSULTS="This is a custom roast!|Another custom burn!"
 ```
 
+### Advanced Configuration (.shamerc)
+For more advanced configuration, copy `.shamerc.example` to `.shamerc` in your repo root:
+
+```yaml
+# .shamerc example
+min_lines: 3
+max_lines: 200
+insult_pack: pirate
+shame_level: savage
+lint_conventional: false
+webhook_url: ""
+plugins:
+  - name: "no-todo"
+    enabled: true
+```
+
 ---
 
 ## Features
@@ -77,11 +95,35 @@ CUSTOM_INSULTS="This is a custom roast!|Another custom burn!"
 - **Leaderboard:** Tracks top offenders in `.git/commit-shame-stats` and prints the Hall of Shame.
 - **Insult Packs:** Choose your flavor: Dad, Pirate, Shakespearean, Corporate, or add your own.
 - **Shame Level:** Gentle (friendly), Sarcastic (default), Savage (brutal).
-- **Language Detection:** Tailors insults to your repo’s main language (Python, JS, Java, C, C++, Go, Ruby).
+- **Language Detection:** Tailors insults to your repo's main language (Python, JS, Java, C, C++, Go, Ruby).
 - **Public Shame:** Set `WEBHOOK_URL` to post shames to Slack/Discord.
 - **Easter Eggs:** 1% chance of rare ASCII art or extra-funny lines.
 - **Praise:** Rare, personalized compliments for great commits.
 - **Random Tips:** Git best practices and pro tips, sprinkled in.
+- **Plugin System:** Extend functionality with custom rules in `hooks.d/`.
+- **CI/CD Ready:** Automated testing with GitHub Actions.
+
+---
+
+## Plugin System
+Create custom rules by adding scripts to `hooks.d/`:
+
+```bash
+# Example plugin: hooks.d/no-todo.sh
+#!/usr/bin/env bash
+# Shames users for committing TODO comments
+if git diff --cached | grep -qi "TODO"; then
+  echo "🛑 No TODO comments allowed!"
+  exit 1
+fi
+```
+
+Enable plugins in your `.shamerc`:
+```yaml
+plugins:
+  - name: "no-todo"
+    enabled: true
+```
 
 ---
 

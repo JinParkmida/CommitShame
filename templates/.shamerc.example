@@ -1,0 +1,85 @@
+# Commit-Shame Bot Configuration
+# Copy this file to .shamerc in your repository root
+
+# Diff size limits (pre-commit hook)
+min_lines: 3
+max_lines: 200
+
+# Commit message limits (commit-msg hook)
+min_length: 10
+max_length: 72
+
+# Bad words to avoid in commit messages
+bad_words:
+  - "fix"
+  - "bug"
+  - "stuff"
+  - "things"
+  - "update"
+  - "change"
+  - "wip"
+  - "temp"
+  - "test"
+  - "asdf"
+  - "qwerty"
+  - "lol"
+  - "oops"
+  - "sorry"
+  - "broken"
+  - "hack"
+  - "quick"
+  - "fast"
+  - "small"
+  - "big"
+  - "huge"
+  - "tiny"
+  - "random"
+  - "whatever"
+  - "idk"
+  - "idc"
+  - "wtf"
+  - "omg"
+  - "lmao"
+  - "rofl"
+
+# Custom bad words (pipe-separated for bash compatibility)
+custom_bad_words: "myword|anotherword|thirdword"
+
+# Dangerous branches (pre-push hook)
+dangerous_branches:
+  - "main"
+  - "master"
+  - "develop"
+  - "production"
+  - "staging"
+  - "release"
+
+# Custom dangerous branches
+custom_dangerous_branches: "mybranch|anotherbranch"
+
+# Force push warning (pre-push hook)
+force_push_warning: true
+
+# Shame level: gentle, sarcastic, savage
+shame_level: "sarcastic"
+
+# Insult pack: dad, pirate, shakespeare, corporate
+insult_pack: "dad"
+
+# Custom insults (pipe-separated)
+custom_insults: "Your custom insult here|Another custom insult"
+
+# Webhook URL for public shaming
+webhook_url: "https://your-webhook-url.com/commit-shame"
+
+# Plugin configuration
+plugins:
+  # Enable specific plugins
+  spellcheck_enabled: true
+  security_scan_enabled: false
+  test_coverage_enabled: true
+
+# Alternative plugin enablement (for bash compatibility)
+enable_spellcheck: true
+enable_security_scan: false
+enable_test_coverage: true 

@@ -49,33 +49,49 @@ run_plugins() {
   fi
 }
 
-# Allow config to override MIN_LENGTH, FORBIDDEN_WORDS, INSULTS, etc.
-MIN_LENGTH=${MIN_LENGTH:-10}
-FORBIDDEN_WORDS=(${FORBIDDEN_WORDS[@]:-fix stuff wip temp})
+# Allow config to override MIN_LINES, MAX_LINES, INSULTS, etc.
+MIN_LINES=${MIN_LINES:-3}
+MAX_LINES=${MAX_LINES:-200}
 INSULTS=(${INSULTS[@]:-${INSULTS[@]}})
+
+# Themed insult packs
+DAD_INSULTS=(
+  "Why did the developer go broke? Because he used up all his cache."
+  "I would explain this diff, but it's above your paygrade."
+  "This commit is like a dad joke: groan-worthy and unnecessary."
+  "You must be a magician, because this diff disappeared!"
+  "This code is so basic, it should come with a starter kit."
+)
+PIRATE_INSULTS=(
+  "Arrr, this commit be smaller than a landlubber's courage!"
+  "Ye call this a diff? I've seen bigger changes in a cup of grog!"
+  "This code be so lost, even a treasure map can't find it!"
+  "Shiver me timbers, this commit is barely a ripple!"
+)
+SHAKESPEARE_INSULTS=(
+  "Thou commit'st a change most foul and insubstantial."
+  "This diff, a tale told by an idiot, signifying nothing."
+  "Would that thy code were as robust as thy prose is weak."
+  "Commit, or not commit: that is the question."
+)
+CORPORATE_INSULTS=(
+  "Let's circle back on this diff after a synergy alignment."
+  "This commit needs more stakeholder buy-in."
+  "Your code is so agile, it sprinted away from the requirements."
+  "Let's take this offline and revisit the diff in Q4."
+)
 
 # If INSULT_PACK is set, use a different insult array (Dad, Pirate, etc.)
 if [ -n "$INSULT_PACK" ]; then
   case "$INSULT_PACK" in
     dad)
-      INSULTS+=(
-        "Why did the developer go broke? Because he used up all his cache."
-        "I would explain this message, but it's above your paygrade."
-        "This commit message is like a dad joke: groan-worthy and unnecessary."
-      )
-      ;;
+      INSULTS+=("${DAD_INSULTS[@]}") ;;
     pirate)
-      INSULTS+=(
-        "Arrr, this message be smaller than a landlubber's courage!"
-        "Ye call this a commit message? I've seen bigger tales in a cup of grog!"
-      )
-      ;;
+      INSULTS+=("${PIRATE_INSULTS[@]}") ;;
     shakespeare)
-      INSULTS+=(
-        "Thou commit'st a message most foul and insubstantial."
-        "This message, a tale told by an idiot, signifying nothing."
-      )
-      ;;
+      INSULTS+=("${SHAKESPEARE_INSULTS[@]}") ;;
+    corporate)
+      INSULTS+=("${CORPORATE_INSULTS[@]}") ;;
   esac
 fi
 
@@ -88,12 +104,21 @@ if [ -n "$CUSTOM_INSULTS" ]; then
 fi
 
 COMPLIMENTS=(
-  "Outstanding! This commit message is poetry in motion."
-  "Bravo! Your message is so clear, even future you will understand it."
-  "Legendary! This is the kind of message that makes bots obsolete."
-  "Your message is so good, even the linter is smiling."
-  "This commit message is so perfect, it deserves a standing ovation."
+  "Impressive! This commit is so balanced, even Thanos approves."
+  "Wow! This diff is the Goldilocks of code changes—just right."
+  "Legendary! This is the kind of commit that makes bots obsolete."
+  "Your code is so good, even the linter is smiling."
+  "This commit is so perfect, it deserves a standing ovation."
 )
+
+get_staged_stats() {
+  local total=0
+  while IFS=$'\t' read -r a r _; do
+    [[ $a =~ ^[0-9]+$ ]] && total=$((total + a))
+    [[ $r =~ ^[0-9]+$ ]] && total=$((total + r))
+  done < <(git diff --cached --numstat)
+  echo "$total"
+}
 
 get_author_name() {
   git config user.name || echo "Developer"
@@ -131,33 +156,6 @@ print_leaderboard() {
   sort -t: -k2 -nr "$STATS_FILE" 2>/dev/null | head -5 | nl -w1 -s'. '
 }
 
-# Themed insult packs
-DAD_INSULTS=(
-  "Why did the developer go broke? Because he used up all his cache."
-  "I would explain this message, but it's above your paygrade."
-  "This commit message is like a dad joke: groan-worthy and unnecessary."
-  "You must be a magician, because this message disappeared!"
-  "This message is so basic, it should come with a starter kit."
-)
-PIRATE_INSULTS=(
-  "Arrr, this message be smaller than a landlubber's courage!"
-  "Ye call this a commit message? I've seen bigger tales in a cup of grog!"
-  "This message be so lost, even a treasure map can't find it!"
-  "Shiver me timbers, this message is barely a ripple!"
-)
-SHAKESPEARE_INSULTS=(
-  "Thou commit'st a message most foul and insubstantial."
-  "This message, a tale told by an idiot, signifying nothing."
-  "Would that thy prose were as robust as thy code is weak."
-  "Commit, or not commit: that is the question."
-)
-CORPORATE_INSULTS=(
-  "Let's circle back on this message after a synergy alignment."
-  "This commit message needs more stakeholder buy-in."
-  "Your message is so agile, it sprinted away from the requirements."
-  "Let's take this offline and revisit the message in Q4."
-)
-
 # Random Git tips
 RANDOM_TIPS=(
   "Did you know? You can use 'git commit --amend' to fix your last commit message."
@@ -176,7 +174,7 @@ print_random_tip() {
 }
 
 EASTER_EGGS=(
-  "  _____ _                 _     _                 _ \n / ____| |               | |   | |               | |\n| |    | | ___  _   _  __| | __| | ___  _ __ ___ | |\n| |    | |/ _ \| | | |/ _` |/ _` |/ _ \| '_ ` _ \| |\n| |____| | (_) | |_| | (_| | (_| | (_) | | | | | | |\n \_____|_|\___/ \__,_|\__,_|\__,_|\___/|_| |_| |_|_|\nCommit-Shame Bot: You found the secret! Now go write better messages."
+  "  _____ _                 _     _                 _ \n / ____| |               | |   | |               | |\n| |    | | ___  _   _  __| | __| | ___  _ __ ___ | |\n| |    | |/ _ \| | | |/ _` |/ _` |/ _ \| '_ ` _ \| |\n| |____| | (_) | |_| | (_| | (_| | (_) | | | | | | |\n \_____|_|\___/ \__,_|\__,_|\__,_|\___/|_| |_| |_|_|\nCommit-Shame Bot: You found the secret! Now go write better code."
   "Commit-Shame Bot: This is the rarest roast. You win... nothing!"
   "Commit-Shame Bot: If you see this, buy a lottery ticket."
 )
@@ -251,66 +249,31 @@ public_shame() {
   fi
 }
 
-# Lint for conventional commits if enabled
 main() {
-  local msg_file="$1"
-  local msg
-  msg=$(head -n1 "$msg_file" | tr -d '\r\n')
-
-  # Lint for conventional commits if enabled
-  if [[ "$LINT_CONVENTIONAL" == "true" ]]; then
-    if ! [[ "$msg" =~ ^(feat|fix|docs|style|refactor|perf|test|chore)(\([a-zA-Z0-9_-]+\))?:\ .+ ]]; then
-      echo "🛑 Commit-Shame Bot: \"$(get_random_insult)\""
-      echo "   Commit message must follow Conventional Commits (e.g., 'feat(ui): Add button')."
-      increment_shame_count
-      print_leaderboard
-      local tip_chance=$((RANDOM % 8))
-      if (( tip_chance == 0 )); then
-        print_random_tip
-      fi
-      exit 1
+  local changes
+  changes=$(get_staged_stats)
+  local praise_chance=$((RANDOM % 10))
+  local midpoint=$(( (MIN_LINES + MAX_LINES) / 2 ))
+  if (( changes == midpoint || praise_chance == 0 )); then
+    echo "$(get_random_compliment)"
+    local tip_chance=$((RANDOM % 8))
+    if (( tip_chance == 0 )); then
+      print_random_tip
     fi
+    exit 0
   fi
-
-  # Check length
-  if (( ${#msg} < MIN_LENGTH )); then
+  if (( changes < MIN_LINES )); then
     echo "🛑 Commit-Shame Bot: \"$(get_random_insult)\""
-    echo "   Message too short: '${msg}'"
+    echo "   Only $changes lines; minimum is $MIN_LINES."
+    public_shame "$(get_random_insult)" "diff size: $changes"
+    exit 1
+  elif (( changes > MAX_LINES )); then
+    echo "🛑 Commit-Shame Bot: \"$(get_random_insult)\""
+    echo "   $changes lines; maximum is $MAX_LINES."
+    public_shame "$(get_random_insult)" "diff size: $changes"
     exit 1
   fi
-
-  # Check forbidden words
-  for word in "${FORBIDDEN_WORDS[@]}"; do
-    if [[ "${msg,,}" =~ $word ]]; then
-      echo "🛑 Commit-Shame Bot: \"$(get_random_insult)\""
-      echo "   Forbidden word '$word' found in message."
-      exit 1
-    fi
-  done
-
-  # Check capitalization
-  if [[ ! "$msg" =~ ^[A-Z] ]]; then
-    echo "🛑 Commit-Shame Bot: \"$(get_random_insult)\""
-    echo "   Message must start with a capital letter."
-    exit 1
-  fi
-
   add_language_insults
-
-  GENTLE_INSULTS=(
-    "This message is a little shy, but that's okay."
-    "A small message, but every word counts!"
-    "Short and sweet—sometimes less is more."
-    "A modest message—at least you tried!"
-  )
-  SAVAGE_INSULTS=(
-    "This message is so bad, even Git wants to delete itself."
-    "I've seen better commit messages in ransom notes."
-    "This message is the reason code reviews exist."
-    "If this message were a bug, it would be a feature."
-    "Your message is so cursed, Stack Overflow banned it."
-  )
-
   case "${SHAME_LEVEL:-sarcastic}" in
     gentle)
       INSULTS=("${GENTLE_INSULTS[@]}")
@@ -320,24 +283,19 @@ main() {
       ;;
     # sarcastic or default: use full list
   esac
-
-  local praise_chance=$((RANDOM % 10))
-  if (( ${#msg} > 30 )) && [[ "$msg" =~ ^[A-Z] ]] && ! [[ "${msg,,}" =~ (fix|stuff|wip|temp) ]] || (( praise_chance == 0 )); then
-    echo "$(get_random_compliment)"
-    local tip_chance=$((RANDOM % 8))
-    if (( tip_chance == 0 )); then
-      print_random_tip
-    fi
-    exit 0
+  increment_shame_count
+  print_leaderboard
+  local tip_chance=$((RANDOM % 8))
+  if (( tip_chance == 0 )); then
+    print_random_tip
   fi
-
   local egg_chance=$((RANDOM % 100))
   if (( egg_chance == 0 )); then
     print_easter_egg
     exit 1
   fi
-
   exit 0
 }
 
-main "$1" 
+run_plugins
+main 

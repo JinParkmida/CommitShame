@@ -1,0 +1,48 @@
+# Development files
+.git/
+.github/
+.vscode/
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Build artifacts
+dist/
+build/
+node_modules/
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Installers (not needed for NPM package)
+install.sh
+install.ps1
+
+# Original hook files (we use the ones in hooks/)
+pre-commit.sh
+commit-msg.sh
+pre-push.sh 

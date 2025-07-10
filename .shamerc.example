@@ -1,0 +1,34 @@
+# Commit-Shame Bot Configuration
+# Copy this file to .shamerc in your repo root
+
+# Diff size limits
+min_lines: 3
+max_lines: 200
+
+# Commit message requirements
+min_length: 10
+forbidden_words:
+  - fix
+  - stuff
+  - wip
+  - temp
+
+# Insult customization
+insult_pack: pirate  # Options: dad, pirate, shakespeare, corporate
+shame_level: savage  # Options: gentle, sarcastic, savage
+
+# Optional features
+lint_conventional: false  # Enforce conventional commits
+webhook_url: ""  # Slack/Discord webhook for public shaming
+
+# Custom insults (pipe-separated)
+custom_insults: "This is a custom roast!|Another custom burn!"
+
+# Plugin rules (experimental)
+plugins:
+  - name: "no-todo"
+    description: "Shame commits with TODO comments"
+    enabled: false
+  - name: "no-debug"
+    description: "Shame commits with debug prints"
+    enabled: false 

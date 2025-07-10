@@ -1,0 +1,40 @@
+{
+  "name": "commit-shame-bot",
+  "version": "1.0.0",
+  "description": "A brutally honest Git hook suite that shames you for bad commits and makes your team laugh (while improving code quality).",
+  "main": "index.js",
+  "bin": {
+    "commit-shame-bot": "./bin/commit-shame-bot.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "chmod +x bin/commit-shame-bot.js"
+  },
+  "keywords": [
+    "git",
+    "hooks",
+    "commit",
+    "shame",
+    "productivity",
+    "humor",
+    "code-quality"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/CommitShame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/CommitShame/issues"
+  },
+  "homepage": "https://github.com/yourusername/CommitShame#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "files": [
+    "bin/",
+    "hooks/",
+    "templates/"
+  ]
+} 
