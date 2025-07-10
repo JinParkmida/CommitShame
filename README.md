@@ -1,4 +1,4 @@
-[☕ Buy me a coffee!](https://buymeacoffee.com/jinparkmida) — Totally optional, this project is free, but if you want to fuel more shaming bots, you know what to do!
+[☕ Buy me a coffee!](https://ko-fi.com/nordicseoul) — Totally optional, this project is free, but if you want to fuel more shaming bots, you know what to do!
 
 ![Commit-Shame Bot Logo](logo.png)
 
