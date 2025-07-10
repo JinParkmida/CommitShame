@@ -156,3 +156,24 @@ Having trouble? Try reading the error message. Still stuck? Ask your nearest mil
 ---
 
 **Commit-Shame Bot™️** — Because your code isn’t the only thing that needs a review. 
+
+## Troubleshooting
+
+### Line Ending Issues
+
+If you encounter "Permission denied" or "bad interpreter" errors when running the installer or hooks, it's likely due to Windows line endings (CRLF) in the shell scripts.
+
+**Quick Fix (Windows):**
+```powershell
+# Run the included PowerShell script
+.\fix-line-endings.ps1
+```
+
+**Manual Fix (Any OS):**
+```bash
+# Convert all .sh files to Unix line endings
+find . -type f -name "*.sh" -exec sed -i 's/\r$//' {} +
+```
+
+**Prevention:**
+The `.gitattributes` file ensures all `.sh` files are normalized to LF line endings in Git. After fixing line endings once, future clones will have the correct format. 

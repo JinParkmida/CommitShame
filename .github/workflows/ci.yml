@@ -13,6 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Fix line endings for shell scripts
+        run: |
+          find . -type f -name "*.sh" -exec sed -i 's/\r$//' {} +
+          echo "Fixed line endings for shell scripts"
+
       - name: Make installer executable
         run: chmod +x install-commit-shame.sh
 
